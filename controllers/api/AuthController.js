@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler')
 const login = asyncHandler(async(req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ 
-        where:{ email: emails}
+        where:{ email: email}
     })
     if (user) {
         const passwordV2 = user.password
