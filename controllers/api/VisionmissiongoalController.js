@@ -1,5 +1,4 @@
 const { VisionMissionGoal } = require('../../models');
-const { validateInputProcess } = require('../../middlewares/validationInput/validateInputs')
 const asyncHandler = require('express-async-handler')
 
 const store = asyncHandler(async(req, res) => {
@@ -11,8 +10,6 @@ const store = asyncHandler(async(req, res) => {
         GoalTitle: req.body.GoalTitle,
         GoalDescription: req.body.GoalDescription,
     }
-    if (!validateInputProcess(dataText)) return res.status(400).send('Please select all fields')
-
     const VisionMissionGoalData = await VisionMissionGoal.findAll();
     if(VisionMissionGoalData.length === 1){
         let updateVisionMissionGoal = await VisionMissionGoal.findOne({

@@ -19,11 +19,11 @@
     "mysql2": "^3.2.4",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "sequelize": "^6.31.1",
     "validate-image-type": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22",
+    "sequelize": "^6.31.1",
     "sequelize-cli": "^6.6.0"
   }
 }

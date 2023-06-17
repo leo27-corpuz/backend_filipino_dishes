@@ -1,7 +1,6 @@
 const { Category } = require('../../models');
 const asyncHandler = require('express-async-handler')
 const { Op } = require('sequelize');
-const { validateInputProcess } = require('../../middlewares/validationInput/validateInputs')
 const { deletingImages, deletiongProcess } = require('../../middlewares/deletingContent/deletingImages')
 const index = asyncHandler(async(req, res) => {
     let pageLimitColumn = parseInt(req.query.limit) || 5
@@ -33,7 +32,7 @@ const index = asyncHandler(async(req, res) => {
                         { description: { [Op.like]: `%${searchQuery}%` } },
                     ]
                 },
-                attributes: { exclude: ['mainImage', 'subMainImage', 'subImage1', 'subImage2', 'updatedAt'] }
+                attributes: { exclude: ['mainImage', 'subMainImage', 'subImage1', 'subImage2', 'updatedAt'] },
             },
         );
         let totalCount = categoryData.count
@@ -49,27 +48,16 @@ const store = asyncHandler(async(req, res) => {
         Title: req.body.Title,
         Description: req.body.Description,
     }
-    const filenames = Object.values(req.files).flat().map((file) => file.filename);
     const mainImage = req.files.mainImage;
     const subMainImage = req.files.subMainImage;
     const subImage1 = req.files.subImage1;
     const subImage2 = req.files.subImage2;
-    if (!validateInputProcess(dataText)) {
-        deletingImages(filenames)
-        res.status(400).send('Please select all fields')
-    }
-    else if(!mainImage || !subMainImage || !subImage1 || !subImage2){
-        deletingImages(filenames)
-        res.status(400).send('Please select all fields')
-    }
-    else{
-        dataText.mainImage = mainImage[0].filename
-        dataText.subMainImage = subMainImage[0].filename
-        dataText.subImage1 = subImage1[0].filename
-        dataText.subImage2 = subImage2[0].filename
-        const newCategory = await Category.create(dataText)
-        res.status(200).send(newCategory)
-    }
+    dataText.mainImage = mainImage[0].filename
+    dataText.subMainImage = subMainImage[0].filename
+    dataText.subImage1 = subImage1[0].filename
+    dataText.subImage2 = subImage2[0].filename
+    const newCategory = await Category.create(dataText)
+    res.status(200).send(newCategory)
 })
 const destroy = asyncHandler(async(req, res) => {
     const { id } = req.params

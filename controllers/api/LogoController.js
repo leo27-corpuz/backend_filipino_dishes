@@ -2,12 +2,9 @@ const { Logo } = require('../../models');
 const asyncHandler = require('express-async-handler')
 
 const store = asyncHandler(async (req, res) => {
-    // let str = data.title.replace(/(?:\r\n|\r|\n)/g, '<br>'); //with line break
     let logoInfo = {
         title: req.body.title,
     }
-    if(!logoInfo.title) return res.status(500).send({ error: 'Please Complete the fields' })
-    
     //check if already have logo
     const logo = await Logo.findAll();
     if(logo.length === 1){

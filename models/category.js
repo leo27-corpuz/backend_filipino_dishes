@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      const Dish = sequelize.define('Dish', {
+          Title: DataTypes.STRING,
+          Description: DataTypes.TEXT,
+      });
+      Category.hasMany(Dish,  {as: 'Dish', foreignKey: 'category_id'})
     }
   }
   Category.init({

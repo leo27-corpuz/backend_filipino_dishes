@@ -5,13 +5,12 @@ const asyncHandler = require('express-async-handler')
 
 const login = asyncHandler(async(req, res) => {
     const { email, password } = req.body;
-    if(!email || !password) return res.status(500).send({ error: 'Please Complete the fields' })
     const user = await User.findOne({ 
-        where:{ email: email}
+        where:{ email: emails}
     })
     if (user) {
         const passwordV2 = user.password
-        if(!validatePassword(password, passwordV2)) return res.status(401).send({ error: 'Invalid password' })
+        if(!validatePassword(password, passwordV2)) return res.status(401).send({ password: 'Invalid account. Please enter a valid account.' })
         const token = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1hour'});
         res.json({ 
             status: 200,
@@ -23,16 +22,7 @@ const login = asyncHandler(async(req, res) => {
          });
     }
     else{
-        return res.status(401).send({ error: 'User not found' })
+        return res.status(401).send({ email: 'User not found' })
     }
-    // const token = jwt.sign({ id: 5 }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1hour'});
-    // res.json({ 
-    //     status: 200,
-    //     user: {
-    //         'email': user.email,
-    //         'type': user.type
-    //     },
-    //     data: token
-    //  });
 })
 module.exports = { login }

@@ -2,7 +2,6 @@ const express = require('express')
 const passport = require('passport')
 const cors = require('cors')
 const app = express()
-const handleErroFileUpload = require('./middlewares/handleErroFileUpload')
 require('dotenv').config()
 require('./middlewares/passport-jwt')
 const { isUser, isAdmin } = require('./middlewares/userTypeIdentification')
@@ -20,6 +19,8 @@ const WhoweareRoute = require('./routers/api/admin/WhoweareRoute')
 const VisionmissiongoalRoute = require('./routers/api/admin/VisionmissiongoalRoute')
 const FounderRoute = require('./routers/api/admin/FounderRoute')
 const CategoryRoute = require('./routers/api/admin/CategoryRoute')
+const PlaceRoute = require('./routers/api/admin/PlaceRoute')
+const DishRoute = require('./routers/api/admin/DishRoute')
 app.use('/api/auth', AuthRoute)
 
 //admin route
@@ -29,6 +30,8 @@ app.use('/api/admin/whoweare', WhoweareRoute)
 app.use('/api/admin/visionmissiongoal', VisionmissiongoalRoute)
 app.use('/api/admin/founder', FounderRoute)
 app.use('/api/admin/category', CategoryRoute)
+app.use('/api/admin/places', PlaceRoute)
+app.use('/api/admin/dish', DishRoute)
 
 app.use("/images", express.static('public/images'));
 
@@ -39,7 +42,6 @@ app.post('/api/isLogin', passport.authenticate('jwt', { session: false}), (req, 
 })
 
 
-app.use(handleErroFileUpload);
   
 ///server start
 const port = process.env.PORT || 8000

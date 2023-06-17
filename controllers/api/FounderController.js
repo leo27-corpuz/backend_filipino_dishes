@@ -1,5 +1,4 @@
 const { Founder } = require('../../models');
-const { validateInputProcess } = require('../../middlewares/validationInput/validateInputs')
 const { deletiongProcess } = require('../../middlewares/deletingContent/deletingImages')
 const asyncHandler = require('express-async-handler')
 
@@ -10,21 +9,9 @@ const store = asyncHandler(async(req, res) => {
         Description: req.body.Description
     }
     const profile = req.file;
-    if (!validateInputProcess(dataText)) {
-        if(profile){
-            deletiongProcess(profile.filename)
-        }
-        res.status(400).send('Please select all fields')
-    }
-    else{
-        if(profile){
-            dataText.Profile = profile.filename
-            let newFounder = await Founder.create(dataText)
-            res.status(200).send(newFounder)
-        }else{
-            res.status(400).send('Please select all fields')
-        }
-    }
+    dataText.Profile = profile.filename
+    let newFounder = await Founder.create(dataText)
+    res.status(200).send(newFounder)
 })
 const edit = asyncHandler(async(req, res) => {
     const { id } = req.params
@@ -44,26 +31,19 @@ const update = asyncHandler(async(req, res) => {
         Description: req.body.Description
     }
     const profile = req.file;
-    if (!validateInputProcess(dataText) || !id) {
-        if(profile){
-            deletiongProcess(profile.filename)
+
+    //check if exist
+    let founder = await Founder.findByPk(id)
+    if (founder === null) return res.status(404).send('Founder Not Found')
+    else {
+        if (profile) {
+            deletiongProcess(founder.Profile)
+            await founder.update({
+                Profile: profile.filename
+            })
         }
-        res.status(400).send('Please select all fields')
-    }
-    else{
-        //check if exist
-        let founder = await Founder.findByPk(id)
-        if(founder === null) return res.status(404).send('Founder Not Found')
-        else{
-            if(profile){
-                deletiongProcess(founder.Profile)
-                await founder.update({
-                    Profile: profile.filename
-                })
-            }
-            let updatefounder = await founder.update(dataText)
-            res.send(updatefounder)
-        }
+        let updatefounder = await founder.update(dataText)
+        res.send(updatefounder)
     }
 })
 const show = asyncHandler(async(req, res) => {
